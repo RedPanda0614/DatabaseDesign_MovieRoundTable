@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>管理员注册</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .register-form {
+            background-color: white;
+            padding: 50px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-field {
+            margin-bottom: 10px;
+        }
+        .form-field input {
+            width: 90%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .form-field input[type="submit"] {
+            background-color: #008276;
+            width: 200px;
+            align-items: center;
+            padding: 10px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-field input[type="submit"]:hover {
+            background-color: #00695c;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="register-form">
+    <div style="text-align: center;">
+        <h2>管理员注册</h2>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-field">
+            <input type="text" name="username" placeholder="用户名">
+        </div>
+        <div class="form-field">
+            <input type="password" name="password" placeholder="密码">
+        </div>
+        <div class="form-field">
+            <input type="email" name="email" placeholder="邮箱">
+        </div>
+        <div class="form-field">
+            <input type="submit" value="注册">
+        </div>
+    </form>
+</div>
+</body>
+</html>

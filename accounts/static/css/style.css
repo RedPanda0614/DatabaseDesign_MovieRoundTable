@@ -1,0 +1,292 @@
+body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-nav {
+            background-color: #1c1c1c;
+            color: white;
+            padding: 7px 20px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-nav ul li {
+            display: inline;
+            margin: 0 20px;
+        }
+
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+        }
+        .search-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-mode {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+            border: none;
+            /* border-radius: 3px; */
+            /* border: 1px solid #ddd; */
+            color:rgb(255, 255, 255);
+            background-color: #1c1c1c;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input{
+            padding: 7px;
+            margin-right: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .search-box button {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 18px;
+            border: none;
+            border-radius: 20px;
+            background-color: #1c1c1c;
+            color:#ddd;
+        }
+        .hero-section {
+            text-align: center;
+            background-color: #1c1c1c; /* 或任何你喜欢的背景色 */
+            height: 100vh; /* 视口高度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px; /* 根据需要调整 */
+            z-index: 0;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-top: 0px;
+            /* Adjust based on nav height */
+            color: rgb(255, 255, 255);
+            font-size: 70px;
+            /* Default font size */
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .fullscreen-bg {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            /* 初始透明 */
+            background-color: #333;
+            /* background: url('../static/images/topic.png') no-repeat center center/cover; */
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding-top: 100vh;
+            /* 确保内容在全屏图下方开始 */
+        }
+
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .left-column {
+            width: 65%;
+            margin-right: 20px;
+            overflow: auto;
+        }
+
+        .right-column {
+            width: 35%;
+            background-color: #f8f8f8; /* 浅灰色背景 */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .right-column h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        } 
+
+        .index-subtitle h2 {
+            color : #333;
+            font-size: 40px;
+            padding: 50px;
+            margin-left: 50px;
+        }
+        
+        .movie-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .movie-list li {
+            padding: 15px 15px; /* 调整内边距 */
+            margin-bottom: 0; /* 移除底部边距 */
+            border-bottom: 1px solid #ddd; /* 添加底部边框作为分隔线 */
+            transition: background-color 0.3s;
+        }
+        
+        .movie-list li:hover {
+            background-color: #eaeaea;
+        }
+        
+        .movie-list li:last-child {
+            border-bottom: none; /* 最后一项不需要分隔线 */
+        }
+        
+        .movie-list a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .movie-title {
+            display: block; /* 确保电影名称占一整行 */
+        }
+        
+        .movie-rating {
+            display: block; /* 确保评分占一整行 */
+            font-size: 0.8em; /* 缩小评分字体大小 */
+            color: #666; /* 可选：更改评分颜色 */
+        }
+        
+        
+
+        .movie {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        
+
+        .movie-image {
+            flex: 0 0 150px;
+            /* 控制图片宽度 */
+            margin-right: 20px;
+        }
+
+        .movie-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .movie-details {
+            flex: 1;
+        }
+        
+
+        /* 用户图标细节 */
+        .user-icon {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            right: 5%;
+            border-color: #1c1c1c;
+        }
+
+        .user-icon img {
+            width: 30px;
+            /* 调整为所需大小 */
+            border-radius: 50%;
+            border-color: #1c1c1c;
+        }
+
+        .user-info {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #000000;
+            border-radius: 5px;
+            
+            padding: 10px;
+            width: 200px;
+            /* 调整为所需宽度 */
+            top: 35px;
+            /* 调整偏移量 */
+            right: 0px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .user-info .avatar {
+            display: block;
+            margin: 0 auto;
+            /* 居中头像 */
+            width: 60px;
+            /* 调整头像大小 */
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border-color: #1c1c1c;
+        }
+
+        .user-info p {
+            margin: 10px 0;
+            /* 添加上下边距 */
+            padding: 5px 0;
+            /* 增加内边距 */
+            border-bottom: 1px solid #ddd;
+            /* 添加底部边框作为分割线 */
+        }
+
+        .user-info p:last-child {
+            border-bottom: none;
+            /* 最后一项不需要分割线 */
+        }
+
+        .start-search-btn {
+            /* 按钮样式 */
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none; /* 如果是 <a> 标签 */
+        }

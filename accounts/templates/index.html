@@ -1,0 +1,612 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>电影信息平台</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> -->
+    <script src="{% static 'js/script.js' %}"></script>
+    <!-- <script src="../static/js/script.js"></script> -->
+    <style>
+        
+        .movie {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        
+
+        .movie-image {
+            flex: 0 0 150px;
+            /* 控制图片宽度 */
+            margin-right: 20px;
+        }
+
+        .movie-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .movie-details {
+            flex: 1;
+        }
+        .movie-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .movie-list li {
+            padding: 15px 15px; /* 调整内边距 */
+            margin-bottom: 0; /* 移除底部边距 */
+            border-bottom: 1px solid #ddd; /* 添加底部边框作为分隔线 */
+            transition: background-color 0.3s;
+        }
+        
+        .movie-list li:hover {
+            background-color: #eaeaea;
+        }
+        
+        .movie-list li:last-child {
+            border-bottom: none; /* 最后一项不需要分隔线 */
+        }
+        
+        .movie-list a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .movie-title {
+            display: block; /* 确保电影名称占一整行 */
+        }
+        
+        .movie-rating {
+            display: block; /* 确保评分占一整行 */
+            font-size: 0.8em; /* 缩小评分字体大小 */
+            color: #666; /* 可选：更改评分颜色 */
+        }
+
+        .index-subtitle h2 {
+            color : #ffffff;
+            font-size: 30px;
+            padding: 20px;
+            margin-left: 20px;
+        }
+        
+        .movie-link {
+            text-decoration: none; /* 移除下划线 */
+            color: inherit; /* 继承文字颜色 */
+        }
+
+        .movie-link:hover {
+            /* 可选：鼠标悬停时的样式 */
+            background-color: #eaeaea;
+        }
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-nav {
+            background-color: #1c1c1c;
+            color: white;
+            padding: 7px 20px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-nav ul li {
+            display: inline;
+            margin: 0 20px;
+        }
+
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+        }
+        .search-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-mode {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+            border: none;
+            /* border-radius: 3px; */
+            /* border: 1px solid #ddd; */
+            color:rgb(255, 255, 255);
+            background-color: #1c1c1c;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input{
+            padding: 7px;
+            margin-right: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .search-box button {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 18px;
+            border: none;
+            border-radius: 20px;
+            background-color: #1c1c1c;
+            color:#ddd;
+        }
+        .hero-section {
+            text-align: center;
+            background-color: #1c1c1c; /* 或任何你喜欢的背景色 */
+            height: 100vh; /* 视口高度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-section img {
+            max-width: 30%; /* 设置最大宽度为页面的80% */
+            max-height: 30vh; /* 设置最大高度为视口高度的80% */
+            margin-top: 20px; /* 根据需要调整 */
+            z-index: 0;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-top: 0px;
+            /* Adjust based on nav height */
+            color: rgb(255, 255, 255);
+            font-size: 70px;
+            /* Default font size */
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .fullscreen-bg {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            /* 初始透明 */
+            background-color: #333;
+            /* background: url('../static/images/topic.png') no-repeat center center/cover; */
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding-top: 100vh;
+            /* 确保内容在全屏图下方开始 */
+        }
+
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .left-column {
+            width: 65%;
+            margin-right: 20px;
+            overflow: auto;
+        }
+
+        .right-column {
+            width: 35%;
+            background-color: #f8f8f8; /* 浅灰色背景 */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .right-column h2 {
+            color: #000000;
+            font-size: 20px;
+            margin-bottom: 15px;
+        } 
+
+        .index-subtitle h2 {
+            color : #ffffff;
+            font-size: 40px;
+            padding: 50px;
+            margin-left: 50px;
+        }
+        
+        .movie-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .movie-list li {
+            padding: 15px 15px; /* 调整内边距 */
+            margin-bottom: 0; /* 移除底部边距 */
+            border-bottom: 1px solid #ddd; /* 添加底部边框作为分隔线 */
+            transition: background-color 0.3s;
+        }
+        
+        .movie-list li:hover {
+            background-color: #eaeaea;
+        }
+        
+        .movie-list li:last-child {
+            border-bottom: none; /* 最后一项不需要分隔线 */
+        }
+        
+        .movie-list a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .movie-title {
+            display: block; /* 确保电影名称占一整行 */
+        }
+        
+        .movie-rating {
+            display: block; /* 确保评分占一整行 */
+            font-size: 0.8em; /* 缩小评分字体大小 */
+            color: #666; /* 可选：更改评分颜色 */
+        }
+        
+        
+
+        .movie {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .movie-image {
+            flex: 0 0 150px;
+            /* 控制图片宽度 */
+            margin-right: 20px;
+        }
+
+        .movie-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .movie-details {
+            flex: 1;
+        }
+
+        /* 用户图标细节 */
+        .user-icon {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            border-color: #1c1c1c;
+            right: -10%
+        }
+
+        .navigation-links {
+            position: relative;
+            right: calc(5% + 10px); /* 5% 右边距 + 10px 左边距 */
+            display: flex;
+            justify-content: flex-end; /* 将内容靠右对齐 */
+        }
+
+        .emoji-link {
+            text-decoration: none; /* 移除默认的下划线样式 */
+            font-size: 24px; /* 调整字体大小 */
+            margin-left: 10px; /* 调整链接之间的左边距 */
+        }
+
+        .user-icon img {
+            width: 30px;
+            /* 调整为所需大小 */
+            border-radius: 50%;
+            border-color: #1c1c1c;
+        }
+
+        .user-info {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #000000;
+            border-radius: 5px;
+            
+            padding: 10px;
+            width: 200px;
+            /* 调整为所需宽度 */
+            top: 35px;
+            /* 调整偏移量 */
+            right: 0px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .user-info .avatar {
+            display: block;
+            margin: 0 auto;
+            /* 居中头像 */
+            width: 60px;
+            /* 调整头像大小 */
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border-color: #1c1c1c;
+        }
+
+        .user-info p {
+            margin: 10px 0;
+            /* 添加上下边距 */
+            padding: 5px 0;
+            /* 增加内边距 */
+            border-bottom: 1px solid #ddd;
+            /* 添加底部边框作为分割线 */
+        }
+
+        .user-info p:last-child {
+            border-bottom: none;
+            /* 最后一项不需要分割线 */
+        }
+
+    </style>
+
+</head>
+
+<body>
+<nav class="top-nav">
+    <ul>
+        <li><a href="../index">电影圆桌-影视信息综合查询平台</a></li>
+
+    </ul>
+    <!-- <form method="post" action="{% url 'search' %}">
+        {% csrf_token %}
+        <div class="search-area">
+            <select id="searchMode" name="search_mode" class="search-mode">
+                <option value="movies">电影</option>
+                <option value="actors">演员</option>
+            </select>
+
+            <div class="search-box">
+                <input type="text" name="query" placeholder="请输入关键词">
+                <button type="submit">🎦</button>
+            </div>
+        </div>
+    </form> -->
+    <div class="navigation-links">
+        <a href="{% url 'search' %}" class="emoji-link">🎦</a>
+        <a href="{% url 'administrator_login' %}" class="emoji-link">👨🏻‍💻</a>
+        <div class="user-icon" onmouseover="showUserInfo()" onmouseout="hideUserInfo()">
+            <a href="{% url 'user_profile' user.id %}">
+                <img src="{% static 'images/user-icon.png' %}" alt="用户"> <!-- 用户图标 -->
+            </a> <!-- 用户图标 -->
+            <div class="user-info" id="userInfo" style="display: none;">
+                <img src="{% static 'images/user-icon.png' %}" alt="头像" class="avatar"> <!-- 用户头像 -->
+                <p>🙇🏻‍♂️用户名：{{ user.username }}</p>
+                <p>🆔用户ID：{{ user.id }}</p>
+                <p>📭邮箱：{{ user.email }}</p>
+                <a href="{% url 'get_mark' user_id=user.id %}">🥰</a>我的标记
+            </div>
+        </div>
+    </div>
+
+</nav>
+<div class="fullscreen-bg">
+    <!-- 大背景图 -->
+    <!-- <img src="../static/images/topic.png" alt="wonka"> -->
+</div>
+
+<div class="hero-section">
+    <img src="../static/images/lov.png" alt="Your Image">
+    <div class="hero-text" id="heroText">
+        <p>欢迎来到 电影圆桌</p>
+    </div>
+</div>
+
+
+<!-- <div class="search-box">
+    <input type="text" placeholder="搜索电影、电视剧...">
+    <button>搜索</button>
+</div> -->
+<div class="container">
+    <div class="left-column">
+        <!-- 示例电影信息 -->
+        <div class="index-subtitle">
+            <h2>正在热映</h2>
+        </div>
+        <a href="your_movie_detail_link" class="movie-link">
+            <div class="movie">
+                <div class="movie-image">
+                    <img src="../static/images/goushen.png" alt="goushen">
+                </div>
+                <div class="movie-details">
+                    <h3>狗神 DogMan</h3>
+                    <p>评分：8.3</p>
+                    <p>导演：吕克·贝松</p>
+                    <p>被暴戾的父亲伤害、被囚禁在狗笼生活数年的道格（卡莱伯·兰德里·琼斯
+                        饰），长大后只能与他的数百只狗相互陪伴。然而命运对他的摧残从未停止，在经历了家庭、爱情、生存的一系列痛苦打击后，道格化身为最危险艳丽的“狗神”杀手，和他的狗群一起，向所有伤害过他的人发起了绝不饶恕的复仇与反抗......
+                    </p>
+                </div>
+            </div>
+        </a>
+        <a href="your_movie_detail_link" class="movie-link">
+            <div class="movie">
+                <div class="movie-image">
+                    <img src="../static/images/sandadui.png" alt="goushen">
+                </div>
+                <div class="movie-details">
+                    <h3>三大队</h3>
+                    <p>评分：7.8</p>
+                    <p>导演：戴墨</p>
+                    <p>刑侦大队队长程兵（张译 饰）带领的三大队在办理一起恶性案件的过程中导致嫌犯之一意外死亡，被判入狱。出狱后依然坚持以普通人身份追踪在逃嫌犯。
+                        影片根据真实事件改编，原载于“网易人间工作室”作者深蓝的《请转告局长，三大队任务完成了》。
+                    </p>
+                </div>
+            </div>
+        </a>
+        <a href="your_movie_detail_link" class="movie-link">
+            <div class="movie">
+                <div class="movie-image">
+                    <img src="../static/images/wonka.png" alt="wonka">
+                </div>
+                <div class="movie-details">
+                    <h3>旺卡 Wonka</h3>
+                    <p>评分：7.6</p>
+                    <p>导演：保罗·金</p>
+                    <p>电影片聚焦经典之作《查理和巧克力工厂》的主人公威利·旺卡（提莫西·查拉梅 饰），这位年轻且天赋异禀的发明家、魔术师、巧克力制作师，是如何经历奇幻冒险，成长为观众挚爱的巧克力工厂掌门人的故事。
+                    </p>
+                </div>
+            </div>
+        </a>
+        <!-- 更多电影信息 -->
+        <div class="movie">
+            <div class="movie-image">
+                <img src="../static/images/hongzhu.png" alt="wonka">
+            </div>
+            <div class="movie-details">
+                <h3>红猪</h3>
+                <p>评分：8.6</p>
+                <p>导演：宫崎骏</p>
+                <p>
+                    罗森是一战中意大利空军的王牌飞行员，但却被施了魔法变了一头猪。虽然变了猪，但罗森还是继续他的老本行，成了一位赏金猎人，专门打击在亚地里亚海空域作恶的空中劫匪。红猪侠一时威名远扬，令劫匪们闻风丧胆。匪徒们为了对付罗森，请来了超级飞行员卡基斯。
+                </p>
+            </div>
+        </div>
+        <div class="movie">
+            <div class="movie-image">
+                <img src="../static/images/zhaomingshangdian.png" alt="wonka">
+            </div>
+            <div class="movie-details">
+                <h3>照明商店</h3>
+                <p>评分：6.8</p>
+                <p>导演：蔡耳朵</p>
+                <p>深巷的尽头，一间“照明商店”长年亮着灯，神秘的老板（刘奕君 饰）细心擦拭着每一个灯泡，形形色色的客人络绎不绝。护士许念（章若楠 饰）和男友郑满（白宇帆
+                    饰）新搬进了商店附近的公寓。她渐渐发现，这里的每一个人，心底都有一个不可言说的秘密。暴风雨之夜，她走进了巷尾的照明商店，答案渐渐被揭开。
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="right-column">
+        <h2>豆瓣经典 Top 20</h2>
+        <ul class="movie-list">
+            <li><a href="https://movie.douban.com/subject/1292052/">
+                <span class="movie-title">肖申克的救赎</span>
+                <span class="movie-rating">9.7分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1291546/">
+                <span class="movie-title">霸王别姬</span>
+                <span class="movie-rating">9.6分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1292720/">
+                <span class="movie-title">阿甘正传</span>
+                <span class="movie-rating">9.5分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1292722/">
+                <span class="movie-title">泰坦尼克号</span>
+                <span class="movie-rating">9.5分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1295644/">
+                <span class="movie-title">这个杀手不太冷</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1291561/">
+                <span class="movie-title">千与千寻</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1292063/">
+                <span class="movie-title">美丽人生</span>
+                <span class="movie-rating">9.5分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1889243/">
+                <span class="movie-title">星际穿越</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/3541415/">
+                <span class="movie-title">盗梦空间</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1295124/">
+                <span class="movie-title">辛德勒的名单</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1292064/">
+                <span class="movie-title">楚门的世界</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/3011091/">
+                <span class="movie-title">忠犬八公的故事</span>
+                <span class="movie-rating">9.4分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1292001/">
+                <span class="movie-title">海上钢琴师</span>
+                <span class="movie-rating">9.3分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/3793023/">
+                <span class="movie-title">三傻大闹宝莱坞</span>
+                <span class="movie-rating">9.2分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1291549/">
+                <span class="movie-title">放牛班的春天</span>
+                <span class="movie-rating">9.3分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/2131459/">
+                <span class="movie-title">机器人总动员</span>
+                <span class="movie-rating">9.3分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/25662329/">
+                <span class="movie-title">疯狂动物城</span>
+                <span class="movie-rating">9.2分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1307914/">
+                <span class="movie-title">无间道</span>
+                <span class="movie-rating">9.3分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1296141/">
+                <span class="movie-title">控方证人</span>
+                <span class="movie-rating">9.6分</span>
+            </a></li>
+            <li><a href="https://movie.douban.com/subject/1292213/">
+                <span class="movie-title">大话西游之大圣娶亲</span>
+                <span class="movie-rating">9.2分</span>
+            </a></li>
+            <!-- 示例电影列表 -->
+            <!-- 更多电影名称 -->
+        </ul>
+    </div>
+
+</div>
+</body>
+
+</html>
