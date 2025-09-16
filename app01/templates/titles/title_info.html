@@ -1,0 +1,510 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            background: #1c1c1c;
+        }
+
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-nav {
+            background-color: #1c1c1c;
+            color: white;
+            padding: 7px 20px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-nav ul li {
+            display: inline;
+            margin: 0 20px;
+        }
+
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .search-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-mode {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+            border: none;
+            /* border-radius: 3px; */
+            /* border: 1px solid #ddd; */
+            color: rgb(255, 255, 255);
+            background-color: #1c1c1c;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 7px;
+            margin-right: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .search-box button {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 18px;
+            border: none;
+            border-radius: 20px;
+            background-color: #1c1c1c;
+            color: #ddd;
+        }
+
+        .hero-section {
+            text-align: center;
+            background-color: #1c1c1c;
+            /* 或任何你喜欢的背景色 */
+            height: 100vh;
+            /* 视口高度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            /* 根据需要调整 */
+            z-index: 0;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-top: 0px;
+            /* Adjust based on nav height */
+            color: rgb(255, 255, 255);
+            font-size: 40px;
+            /* Default font size */
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .fullscreen-bg {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            /* 初始透明 */
+            /* background: url('../static/images/topic.png') no-repeat center center/cover; */
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding-top: 100vh;
+            /* 确保内容在全屏图下方开始 */
+        }
+
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .left-column {
+            width: 65%;
+            margin-right: 20px;
+            overflow: auto;
+        }
+
+        .right-column {
+            width: 35%;
+            background-color: #f8f8f8;
+            /* 浅灰色背景 */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .right-column h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .index-subtitle h2 {
+            color: #333;
+            font-size: 40px;
+            padding: 50px;
+            margin-left: 50px;
+        }
+
+
+
+        /* 用户图标细节 */
+        .user-icon {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            border-color: #1c1c1c;
+            right: -10%
+        }
+
+        .navigation-links {
+            position: relative;
+            right: calc(5% + 10px); /* 5% 右边距 + 10px 左边距 */
+            display: flex;
+            justify-content: flex-end; /* 将内容靠右对齐 */
+        }
+
+        .emoji-link {
+            text-decoration: none; /* 移除默认的下划线样式 */
+            font-size: 24px; /* 调整字体大小 */
+            margin-left: 10px; /* 调整链接之间的左边距 */
+        }
+
+        .user-icon img {
+            width: 30px;
+            /* 调整为所需大小 */
+            border-radius: 50%;
+            border-color: #1c1c1c;
+        }
+
+        .user-info {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #000000;
+            border-radius: 5px;
+
+            padding: 10px;
+            width: 200px;
+            /* 调整为所需宽度 */
+            top: 35px;
+            /* 调整偏移量 */
+            right: 0px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .user-info .avatar {
+            display: block;
+            margin: 0 auto;
+            /* 居中头像 */
+            width: 60px;
+            /* 调整头像大小 */
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border-color: #1c1c1c;
+        }
+
+        .user-info p {
+            margin: 10px 0;
+            /* 添加上下边距 */
+            padding: 5px 0;
+            /* 增加内边距 */
+            border-bottom: 1px solid #ddd;
+            /* 添加底部边框作为分割线 */
+        }
+
+        .user-info p:last-child {
+            border-bottom: none;
+            /* 最后一项不需要分割线 */
+        }
+
+        .movie-results {
+            padding: 60px;
+        }
+
+        .movie-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+        }
+
+        .movie-image {
+            flex: 0 0 200px;
+            /* 控制图片宽度，可根据实际需求调整 */
+            margin-right: 20px;
+        }
+
+        .movie-image img {
+            flex: 0 0 190px;
+            /* 控制图片宽度，可根据实际需求调整 */
+            margin-right: 30px;
+            padding: 10px;
+        }
+
+        .movie-details {
+            flex: 1;
+            padding-left: 20px;
+            /* 可选，为详细信息增加一些间隔 */
+        }
+
+        .movie-details h3 {
+            margin-top: 0;
+            /* 移除标题的顶部边距 */
+        }
+
+        /* 评价按钮样式 */
+        .review-button {
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 30%;
+            /* 调整弹窗宽度 */
+        }
+
+        .close {
+            color: #aaa;
+            float: center;
+            width: 70%;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* 弹窗中表单样式 */
+        #reviewForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #reviewForm textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+        }
+
+        #reviewForm button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #1e1e1e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            align-items: center;
+        }
+
+        .movie-comments {
+            margin-top: 20px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment p {
+            margin: 5px 0;
+        }
+
+        .comment p:first-child {
+            font-weight: bold;
+        }
+    </style>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        function openReviewModal(tconst) {
+            document.getElementById('reviewModal').style.display = 'block';
+            document.getElementById('movieTconst').value = tconst;
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+    </script>
+
+</head>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>搜索电影</title>
+</head>
+
+<body>
+    <nav class="top-nav">
+        <ul>
+            <li><a href="../index">电影圆桌-影视信息综合查询平台</a></li>
+
+        </ul>
+        <form method="post" action="{% url 'search' %}"> <!-- 确保 action 指向合并后的 search 视图 -->
+            {% csrf_token %}
+            <div class="search-area">
+                <select id="searchMode" name="search_mode" class="search-mode">
+                    <option value="movies">电影</option>
+                    <option value="actors">演员</option>
+                </select>
+
+                <div class="search-box">
+                    <!-- 由于两种搜索模式共用一个输入字段，更改 name 为 'query' -->
+                    <input type="text" name="query" placeholder="请输入关键词">
+                    <button type="submit">🔎</button>
+                </div>
+            </div>
+        </form>
+
+     <div class="navigation-links">
+        <a href="{% url 'search' %}" class="emoji-link">🎦</a>
+        <a href="{% url 'administrator_login' %}" class="emoji-link">👨🏻‍💻</a>
+        <div class="user-icon" onmouseover="showUserInfo()" onmouseout="hideUserInfo()">
+            <a href="{% url 'user_profile' user.id %}">
+                <img src="{% static 'images/user-icon.png' %}" alt="用户"> <!-- 用户图标 -->
+            </a> <!-- 用户图标 -->
+            <div class="user-info" id="userInfo" style="display: none;">
+                <img src="{% static 'images/user-icon.png' %}" alt="头像" class="avatar"> <!-- 用户头像 -->
+                <p>🙇🏻‍♂️用户名：{{ user.username }}</p>
+                <p>🆔用户ID：{{ user.id }}</p>
+                <p>📭邮箱：{{ user.email }}</p>
+                <a href="{% url 'get_mark' user_id=user.id %}">🥰</a>我的标记
+            </div>
+        </div>
+    </div>
+
+    </nav>
+
+    <!-- <form method="post">
+        {% csrf_token %}
+        <input type="text" name="primaryTitle" placeholder="搜索电影...">
+        <input type="submit" value="搜索">
+    </form> -->
+
+    <!-- 其他内容保持不变 -->
+
+    {% if movie %}
+    <div class="movie-results">
+        <div class="movie-item">
+            <div class="movie-image">
+                <img src="{% static 'images/douban/'|add:movie.pictures %}" alt="{{ movie.primarytitle }}">
+            </div>
+            <div class="movie-details">
+                <h2>{{ movie.primarytitle }}</h2>
+                <p>别名：{{ movie.originaltitle }}</p>
+                <p>评分：{{ movie.score }}</p>
+                <p>导演：{{ movie.director }}</p>
+                <p>演员：{{ movie.actor }}</p>
+                <p>年份：{{ movie.startyear }}</p>
+                <p>地区：{{ movie.nation }}</p>
+                <!-- 其他电影信息 -->
+            </div>
+        </div>
+        <div class="movie-comments">
+            {% for comment in comments %}
+            <div class="comment">
+                <p><strong>用户id：{{ comment.userid }}</strong></p>
+                <p>{{ comment.comment }}</p>
+                <p>评分：{{ comment.rating }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="review-button" onclick="openReviewModal('{{ movie.tconst }}')">评价</button>
+        {% else %}
+        <div class="fullscreen-bg">
+            <!-- 大背景图 -->
+        </div>
+        <div class="hero-section">
+            <div class="hero-text" id="heroText">
+                <p>请输入你想查询的内容</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReviewModal()">&times;</span>
+            <form id="reviewForm" method="post" , action="{% url 'submit_review' %}">
+                {% csrf_token %}
+                <input type="hidden" name="tconst" id="movieTconst">
+                <label for="rating">评分（1-5分）:</label>
+                <input type="range" id="rating" name="rating" min="1" max="5">
+                <textarea name="comment" placeholder="输入您的评论..."></textarea>
+                <button type="submit">提交评价</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 其他内容保持不变 -->
+
+</body>
+
+</html>

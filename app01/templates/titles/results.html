@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            
+            /* 页面主体内容的样式 */
+            .container {
+                width: 80%;
+                margin: 40px auto; /* 增加顶部的空间，防止内容被导航栏遮挡 */
+                text-align: center;
+            }
+
+
+            .container {
+                width: 80%;
+                margin: 20px auto;
+            }
+
+            .movie-item {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                border-bottom: 1px solid #ccc;
+                padding: 10px 0;
+            }
+
+            .movie-image {
+                flex: 0 0 150px;
+                height: 200px;
+                background-color: #ddd;
+                margin-right: 20px;
+            }
+
+            .movie-details {
+                flex: 1;
+                text-align: left;
+            }
+
+            .movie-details ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <ul>
+            <li><a href="../index">电影圆桌-影视信息综合查询平台</a></li>
+
+        </ul>
+        <form method="post" action="{% url 'search' %}">
+            {% csrf_token %}
+            <div class="search-area">
+                <select id="searchMode" name="search_mode" class="search-mode">
+                    <option value="movies">电影</option>
+                    <option value="actors">演员</option>
+                </select>
+        
+                <div class="search-box">
+                    <input type="text" name="query" placeholder="请输入关键词">
+                    <button type="submit">🎦</button>
+                </div>
+            </div>
+        </form>
+        <div class="user-icon" onmouseover="showUserInfo()" onmouseout="hideUserInfo()">
+            <img src="{% static 'images/user-icon.png' %}" alt="用户"> <!-- 用户图标 -->
+            <div class="user-info" id="userInfo" style="display: none;">
+                <img src="{% static 'images/user-icon.png' %}" alt="头像" class="avatar"> <!-- 用户头像 -->
+                <p>用户名：{{ user.username }}</p>
+                <p>用户ID：{{ user.id }}</p>
+                <p>邮箱：{{ user.email }}</p>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h2>Search Results</h2>
+        {% if title_data %}
+            {% for data in title_data %}
+                <div class="movie-item">
+                    <div class="movie-image">
+                        <!-- Image placeholder -->
+                    </div>
+                    <div class="movie-details">
+                        <h3>{{ data.title.primarytitle }} ({{ data.title.startyear }})</h3>
+                        <p>Genres: {{ data.title.genres }}</p>
+                        
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

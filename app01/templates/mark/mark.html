@@ -1,0 +1,462 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>电影信息平台</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> -->
+    <script src="{% static 'js/script.js' %}"></script>
+    <!-- <script src="../static/js/script.js"></script> -->
+    <style>
+
+        .movie {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .movie-image {
+            flex: 0 0 150px;
+            /* 控制图片宽度 */
+            margin-right: 20px;
+        }
+
+        .movie-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .movie-details {
+            flex: 1;
+        }
+        .movie-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .movie-list li {
+            padding: 15px 15px; /* 调整内边距 */
+            margin-bottom: 0; /* 移除底部边距 */
+            border-bottom: 1px solid #ddd; /* 添加底部边框作为分隔线 */
+            transition: background-color 0.3s;
+        }
+
+        .movie-list li:hover {
+            background-color: #eaeaea;
+        }
+
+        .movie-list li:last-child {
+            border-bottom: none; /* 最后一项不需要分隔线 */
+        }
+
+        .movie-list a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .movie-title {
+            display: block; /* 确保电影名称占一整行 */
+        }
+
+        .movie-rating {
+            display: block; /* 确保评分占一整行 */
+            font-size: 0.8em; /* 缩小评分字体大小 */
+            color: #666; /* 可选：更改评分颜色 */
+        }
+
+        .index-subtitle h2 {
+            color : #ffffff;
+            font-size: 30px;
+            padding: 20px;
+            margin-left: 20px;
+        }
+
+        .movie-link {
+            text-decoration: none; /* 移除下划线 */
+            color: inherit; /* 继承文字颜色 */
+        }
+
+        .movie-link:hover {
+            /* 可选：鼠标悬停时的样式 */
+            background-color: #eaeaea;
+        }
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .top-nav {
+            background-color: #1c1c1c;
+            color: white;
+            padding: 7px 20px;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .top-nav ul li {
+            display: inline;
+            margin: 0 20px;
+        }
+
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+        }
+        .search-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-mode {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+            border: none;
+            /* border-radius: 3px; */
+            /* border: 1px solid #ddd; */
+            color:rgb(255, 255, 255);
+            background-color: #1c1c1c;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input{
+            padding: 7px;
+            margin-right: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 20px;
+        }
+
+        .search-box button {
+            padding: 5px;
+            margin-right: 5px;
+            font-size: 18px;
+            border: none;
+            border-radius: 20px;
+            background-color: #1c1c1c;
+            color:#ddd;
+        }
+        .hero-section {
+            text-align: center;
+            background-color: #1c1c1c; /* 或任何你喜欢的背景色 */
+            height: 100vh; /* 视口高度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-section img {
+            max-width: 30%; /* 设置最大宽度为页面的80% */
+            max-height: 30vh; /* 设置最大高度为视口高度的80% */
+            margin-top: 20px; /* 根据需要调整 */
+            z-index: 0;
+        }
+
+
+        .hero-text {
+            text-align: center;
+            margin-top: 0px;
+            /* Adjust based on nav height */
+            color: rgb(255, 255, 255);
+            font-size: 70px;
+            /* Default font size */
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .fullscreen-bg {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            /* 初始透明 */
+            background-color: #333;
+            /* background: url('../static/images/topic.png') no-repeat center center/cover; */
+            transition: opacity 0.5s ease;
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding-top: 100vh;
+            /* 确保内容在全屏图下方开始 */
+        }
+
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .left-column {
+            width: 65%;
+            margin-right: 20px;
+            overflow: auto;
+        }
+
+        .right-column {
+            width: 35%;
+            background-color: #f8f8f8; /* 浅灰色背景 */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .right-column h2 {
+            color: #000000;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .index-subtitle h2 {
+            color : #ffffff;
+            font-size: 40px;
+            padding: 50px;
+            margin-left: 50px;
+        }
+
+        .movie-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .movie-list li {
+            padding: 15px 15px; /* 调整内边距 */
+            margin-bottom: 0; /* 移除底部边距 */
+            border-bottom: 1px solid #ddd; /* 添加底部边框作为分隔线 */
+            transition: background-color 0.3s;
+        }
+
+        .movie-list li:hover {
+            background-color: #eaeaea;
+        }
+
+        .movie-list li:last-child {
+            border-bottom: none; /* 最后一项不需要分隔线 */
+        }
+
+        .movie-list a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .movie-title {
+            display: block; /* 确保电影名称占一整行 */
+        }
+
+        .movie-rating {
+            display: block; /* 确保评分占一整行 */
+            font-size: 0.8em; /* 缩小评分字体大小 */
+            color: #666; /* 可选：更改评分颜色 */
+        }
+
+
+
+        .movie {
+            display: flex;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+
+
+        .movie-image {
+            flex: 0 0 150px;
+            /* 控制图片宽度 */
+            margin-right: 20px;
+        }
+
+        .movie-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .movie-details {
+            flex: 1;
+        }
+
+
+        /* 用户图标细节 */
+        .user-icon {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            right: 5%;
+            border-color: #1c1c1c;
+        }
+
+        .user-icon img {
+            width: 30px;
+            /* 调整为所需大小 */
+            border-radius: 50%;
+            border-color: #1c1c1c;
+        }
+
+        .user-info {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #000000;
+            border-radius: 5px;
+
+            padding: 10px;
+            width: 200px;
+            /* 调整为所需宽度 */
+            top: 35px;
+            /* 调整偏移量 */
+            right: 0px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .user-info .avatar {
+            display: block;
+            margin: 0 auto;
+            /* 居中头像 */
+            width: 60px;
+            /* 调整头像大小 */
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border-color: #1c1c1c;
+        }
+
+        .user-info p {
+            margin: 10px 0;
+            /* 添加上下边距 */
+            padding: 5px 0;
+            /* 增加内边距 */
+            border-bottom: 1px solid #ddd;
+            /* 添加底部边框作为分割线 */
+        }
+
+        .user-info p:last-child {
+            border-bottom: none;
+            /* 最后一项不需要分割线 */
+        }
+
+        /* comment 区域样式 */
+        .comment_style {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        /* 表格样式 */
+        .comment_table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        .comment_table th, .comment_table td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .comment_table th {
+            background-color: #f2f2f2;
+        }
+
+    </style>
+
+</head>
+<body>
+<nav class="top-nav">
+    <ul>
+        <li><a href="../index">电影圆桌-影视信息综合查询平台</a></li>
+
+    </ul>
+    <a href="{% url 'search' %}" class="start-search-btn">🎦</a>
+
+    <div class="user-icon" onmouseover="showUserInfo()" onmouseout="hideUserInfo()">
+        <a href="{% url 'user_profile' user.id %}">
+            <img src="{% static 'images/user-icon.png' %}" alt="用户"> <!-- 用户图标 -->
+        </a> <!-- 用户图标 -->
+        <div class="user-info" id="userInfo" style="display: none;">
+            <img src="{% static 'images/user-icon.png' %}" alt="头像" class="avatar"> <!-- 用户头像 -->
+            <p>🙇🏻‍♂️用户名：{{ user.username }}</p>
+            <p>🆔用户ID：{{ user.id }}</p>
+            <p>📭邮箱：{{ user.email }}</p>
+            <a href="{% url 'get_mark' user_id=user.id %}">🥰</a>我的标记
+        </div>
+    </div>
+
+</nav>
+<!--<h1>我的标记</h1>-->
+
+<div class="comment_style">
+    <h2> 📝我标记过的…… </h2>
+    {% if user_comments %}
+    <table class="comment_table">
+        <thead>
+        <tr>
+            <th>电影名称</th>
+            <th>评价</th>
+            <th>评分</th>
+            <th>操作</th> <!-- 新增一列，用于放置删除按钮 -->
+        </tr>
+        </thead>
+        <tbody>
+        {% for comment in user_comments %}
+        <tr>
+            <!--            <td>{{ comment.tconst }}</td>-->
+            <td>
+                <a href="{{ comment.url }}" target="_blank">{{ comment.primaryTitle }}</a>
+            </td>
+
+            <td>{{ comment.comment }}</td>
+            <td>{{ comment.rating }}</td>
+            <td>
+                <!--                             {{ comment.commentid }}-->
+                <form action="{% url 'delete_comment' comment.commentid %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">删除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>您还没有标记任何电影。</p>
+    {% endif %}
+</div>
+
+
+</body>
+</html>
